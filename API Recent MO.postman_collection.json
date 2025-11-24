@@ -1,0 +1,373 @@
+{
+  "info": {
+    "name": "Warehouse - Recent MO API",
+    "_postman_id": "cb6b9b4a-7a2e-4d2a-9c52-warehouse-manufacturing-identity",
+    "description": "Collection untuk menguji endpoint recent_mo (upsert) dan endpoints terkait.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Upsert Recent MO",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"mo_name\": \"MO/TEST/001\",\n  \"state\": \"progress\",\n  \"group_worker_id\": 6,\n  \"note\": \"TEAM LIQUID - SHIFT 1\",\n  \"product_id\": 123,\n  \"product_name\": \"Sample Product\",\n  \"product_uom\": \"PCS\",\n  \"product_qty\": 1000,\n  \"initial_qty_target\": 1000,\n  \"create_date\": \"2025-01-20 08:00:00\",\n  \"origin\": \"SO123\",\n  \"transfer_id\": 98765,\n  \"auth_first\": \"10000\",\n  \"auth_last\": \"10049\",\n  \"leader_id\": 77,\n  \"roll_number\": \"R-2025-001\",\n  \"ready_for_production\": 1\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/recent-mo",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "recent-mo"]
+        }
+      },
+      "response": [
+        {
+          "name": "Success - Upserted",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mo_name\": \"MO/TEST/001\",\n  \"state\": \"progress\",\n  \"group_worker_id\": 6,\n  \"note\": \"TEAM LIQUID - SHIFT 1\",\n  \"product_id\": 123,\n  \"product_name\": \"Sample Product\",\n  \"product_uom\": \"PCS\",\n  \"product_qty\": 1000,\n  \"initial_qty_target\": 1000,\n  \"create_date\": \"2025-01-20 08:00:00\",\n  \"origin\": \"SO123\",\n  \"transfer_id\": 98765,\n  \"auth_first\": \"10000\",\n  \"auth_last\": \"10049\",\n  \"leader_id\": 77,\n  \"roll_number\": \"R-2025-001\",\n  \"ready_for_production\": 1\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/recent-mo",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "recent-mo"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"ok\": true,\n  \"mo_name\": \"MO/TEST/001\",\n  \"message\": \"Updated or inserted successfully\"\n}"
+        },
+        {
+          "name": "Error - Missing mo_name",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"state\": \"progress\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/recent-mo",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "recent-mo"]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"error\": \"mo_name is required\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get All Recent MO",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/recent-mo?create_date_from=2025-01-15&create_date_to=2025-01-20&limit=100",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "recent-mo"],
+          "query": [
+            {
+              "key": "create_date_from",
+              "value": "2025-01-15",
+              "description": "Filter dari tanggal (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+            },
+            {
+              "key": "create_date_to",
+              "value": "2025-01-20",
+              "description": "Filter sampai tanggal (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+            },
+            {
+              "key": "limit",
+              "value": "100",
+              "description": "Limit jumlah record (default: 500, max: 1000)"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success - With Data",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/recent-mo?create_date_from=2025-01-15&create_date_to=2025-01-20&limit=100",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "recent-mo"],
+              "query": [
+                {
+                  "key": "create_date_from",
+                  "value": "2025-01-15"
+                },
+                {
+                  "key": "create_date_to",
+                  "value": "2025-01-20"
+                },
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"data\": [\n    {\n      \"mo_name\": \"MO/2025/001\",\n      \"product_name\": \"Sample Product\",\n      \"state\": \"progress\",\n      \"group_worker_id\": 6,\n      \"note\": \"TEAM LIQUID - SHIFT 1\",\n      \"product_qty\": 1000,\n      \"initial_qty_target\": 1000,\n      \"product_uom\": \"PCS\",\n      \"create_date\": \"2025-01-18 08:00:00\",\n      \"date_start\": \"2025-01-18 09:15:00\",\n      \"date_finished\": null,\n      \"origin\": \"SO123\",\n      \"transfer_id\": 98765,\n      \"auth_first\": \"10000\",\n      \"auth_last\": \"10049\",\n      \"auth_used\": 50,\n      \"loss_value\": 950,\n      \"percentage_loss\": 95.0,\n      \"leader_id\": \"77\",\n      \"roll_number\": \"R-2025-001\",\n      \"ready_for_production\": 1\n    },\n    {\n      \"mo_name\": \"MO/2025/002\",\n      \"product_name\": \"Another Product\",\n      \"state\": \"done\",\n      \"group_worker_id\": 7,\n      \"note\": \"TEAM LIQUID - SHIFT 2\",\n      \"product_qty\": 500,\n      \"initial_qty_target\": 500,\n      \"product_uom\": \"PCS\",\n      \"create_date\": \"2025-01-17 10:00:00\",\n      \"date_start\": \"2025-01-17 11:00:00\",\n      \"date_finished\": \"2025-01-17 16:30:00\",\n      \"origin\": \"SO124\",\n      \"transfer_id\": 98766,\n      \"auth_first\": \"20000\",\n      \"auth_last\": \"20049\",\n      \"auth_used\": 50,\n      \"loss_value\": 450,\n      \"percentage_loss\": 90.0,\n      \"leader_id\": \"78\",\n      \"roll_number\": \"R-2025-002\",\n      \"ready_for_production\": 1\n    }\n  ],\n  \"count\": 2\n}"
+        },
+        {
+          "name": "Success - Empty Result",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/recent-mo?create_date_from=2025-02-01&create_date_to=2025-02-05",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "recent-mo"],
+              "query": [
+                {
+                  "key": "create_date_from",
+                  "value": "2025-02-01"
+                },
+                {
+                  "key": "create_date_to",
+                  "value": "2025-02-05"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"data\": [],\n  \"count\": 0\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Ready MO",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/ready-mo?create_date_from=2025-01-15&create_date_to=2025-01-20",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "ready-mo"],
+          "query": [
+            {
+              "key": "create_date_from",
+              "value": "2025-01-15",
+              "description": "Filter dari tanggal (format: YYYY-MM-DD)"
+            },
+            {
+              "key": "create_date_to",
+              "value": "2025-01-20",
+              "description": "Filter sampai tanggal (format: YYYY-MM-DD)"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success - With Data",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/ready-mo?create_date_from=2025-01-15&create_date_to=2025-01-20",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "ready-mo"],
+              "query": [
+                {
+                  "key": "create_date_from",
+                  "value": "2025-01-15"
+                },
+                {
+                  "key": "create_date_to",
+                  "value": "2025-01-20"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"data\": [\n    {\n      \"mo_name\": \"MO/2025/003\",\n      \"product_name\": \"Ready Product\",\n      \"product_uom\": \"PCS\",\n      \"product_qty\": 800,\n      \"auth_first\": \"30000\",\n      \"roll_number\": \"R-2025-003\",\n      \"create_date\": \"2025-01-19 09:00:00\"\n    },\n    {\n      \"mo_name\": \"MO/2025/004\",\n      \"product_name\": \"Another Ready Product\",\n      \"product_uom\": \"PCS\",\n      \"product_qty\": 600,\n      \"auth_first\": \"40000\",\n      \"roll_number\": \"R-2025-004\",\n      \"create_date\": \"2025-01-18 14:30:00\"\n    }\n  ]\n}"
+        },
+        {
+          "name": "Success - Empty Result",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/ready-mo?create_date_from=2025-02-01&create_date_to=2025-02-05",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "ready-mo"],
+              "query": [
+                {
+                  "key": "create_date_from",
+                  "value": "2025-02-01"
+                },
+                {
+                  "key": "create_date_to",
+                  "value": "2025-02-05"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"data\": []\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Running MO",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3000/api/running-mo?create_date_from=2025-01-15&create_date_to=2025-01-20",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "running-mo"],
+          "query": [
+            {
+              "key": "create_date_from",
+              "value": "2025-01-15",
+              "description": "Filter dari tanggal (format: YYYY-MM-DD)"
+            },
+            {
+              "key": "create_date_to",
+              "value": "2025-01-20",
+              "description": "Filter sampai tanggal (format: YYYY-MM-DD)"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "Success - With Data",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/running-mo?create_date_from=2025-01-15&create_date_to=2025-01-20",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "running-mo"],
+              "query": [
+                {
+                  "key": "create_date_from",
+                  "value": "2025-01-15"
+                },
+                {
+                  "key": "create_date_to",
+                  "value": "2025-01-20"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"data\": [\n    {\n      \"mo_name\": \"MO/2025/005\",\n      \"product_name\": \"Running Product\",\n      \"product_uom\": \"PCS\",\n      \"product_qty\": 1200,\n      \"auth_first\": \"50000\",\n      \"auth_last\": \"50075\",\n      \"roll_number\": \"R-2025-005\",\n      \"date_start\": \"2025-01-19 08:00:00\",\n      \"create_date\": \"2025-01-18 10:00:00\"\n    },\n    {\n      \"mo_name\": \"MO/2025/006\",\n      \"product_name\": \"Another Running Product\",\n      \"product_uom\": \"PCS\",\n      \"product_qty\": 900,\n      \"auth_first\": \"60000\",\n      \"auth_last\": null,\n      \"roll_number\": \"R-2025-006\",\n      \"date_start\": \"2025-01-20 09:30:00\",\n      \"create_date\": \"2025-01-19 11:00:00\"\n    }\n  ]\n}"
+        },
+        {
+          "name": "Success - Empty Result",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/running-mo?create_date_from=2025-02-01&create_date_to=2025-02-05",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "running-mo"],
+              "query": [
+                {
+                  "key": "create_date_from",
+                  "value": "2025-02-01"
+                },
+                {
+                  "key": "create_date_to",
+                  "value": "2025-02-05"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "cookie": [],
+          "body": "{\n  \"data\": []\n}"
+        }
+      ]
+    }
+  ]
+}
+
+

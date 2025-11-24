@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "167a7671-ec4b-4842-99fd-b20234bac2d6",
+		"name": "API Authenticity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5859173"
+	},
+	"item": [
+		{
+			"name": "Vendor by Marketing Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{warehouse}}/authenticity/vendor?marketing_id=FBAS77558981&limit=1&page=1&source=WMS",
+					"host": [
+						"{{warehouse}}"
+					],
+					"path": [
+						"authenticity",
+						"vendor"
+					],
+					"query": [
+						{
+							"key": "marketing_id",
+							"value": "FBAS77558981"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "source",
+							"value": "WMS"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vendor by Serial",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{warehouse}}/authenticity/vendor?serial=1300300624&limit=1&page=1",
+					"host": [
+						"{{warehouse}}"
+					],
+					"path": [
+						"authenticity",
+						"vendor"
+					],
+					"query": [
+						{
+							"key": "serial",
+							"value": "1300300624"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vendor by Delivery Date",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{warehouse}}/authenticity/vendor?delivery_date=2023-05-20&limit=1&page=1",
+					"host": [
+						"{{warehouse}}"
+					],
+					"path": [
+						"authenticity",
+						"vendor"
+					],
+					"query": [
+						{
+							"key": "delivery_date",
+							"value": "2023-05-20"
+						},
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Repacking by Authenticty Id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImZvb20iLCJpcF9hZGRyZXNzIjoiMTcyLjE5LjAuMSIsImV4cCI6MTc2MjE4ODc4MH0.jtZYjLe9Dz-6US6GnsJkBQwocC36JfbmP_u4Tcj11_s",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{warehouse}}/authenticity/repacking?authenticity_id=01024585539&source=CRM",
+					"host": [
+						"{{warehouse}}"
+					],
+					"path": [
+						"authenticity",
+						"repacking"
+					],
+					"query": [
+						{
+							"key": "authenticity_id",
+							"value": "01024585539"
+						},
+						{
+							"key": "source",
+							"value": "CRM"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\"username\": \"foom\", \"password\": \"foom\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{warehouse}}/get-token",
+					"host": [
+						"{{warehouse}}"
+					],
+					"path": [
+						"get-token"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "warehouse",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

@@ -1,0 +1,41 @@
+{
+  "name": "warehouse-production-ui",
+  "version": "1.0.0",
+  "description": "Manufacturing Process System - Integrated with Odoo and Authenticity API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "sync": "node scripts/sync_recent_mo.js",
+    "setup": "node scripts/setup_db.js",
+    "migrate": "node scripts/migrate_add_ready_flag.js && node scripts/migrate_add_production_log.js",
+    "dev": "nodemon server.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop ecosystem.config.js",
+    "pm2:restart": "pm2 restart ecosystem.config.js",
+    "pm2:logs": "pm2 logs",
+    "pm2:kill": "pm2 delete all && pm2 kill",
+    "stop-all": "npm run pm2:kill || true",
+    "kill-node-sync": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"Get-WmiObject Win32_Process | Where-Object { $_.Name -eq 'node.exe' -and $_.CommandLine -match 'scripts\\\\sync_recent_mo.js|scripts\\\\scheduler_sync.js' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }\""
+  },
+  "keywords": [
+    "manufacturing",
+    "warehouse",
+    "odoo",
+    "production",
+    "sqlite"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}
