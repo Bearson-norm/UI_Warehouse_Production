@@ -530,6 +530,31 @@ Server akan berjalan di `http://localhost:3000`
 
 **Lihat `LOCAL_DEPLOYMENT.md` untuk panduan lengkap!**
 
+## 🚀 Deployment ke Website
+
+Untuk mendeploy aplikasi ini ke server web (VPS, Cloud Platform, dll):
+
+### Quick Start
+- **Panduan Cepat:** Lihat [`DEPLOYMENT_QUICKSTART.md`](DEPLOYMENT_QUICKSTART.md) untuk deployment dalam 10 menit
+- **Panduan Lengkap:** Lihat [`DEPLOYMENT.md`](DEPLOYMENT.md) untuk panduan detail
+- **Setup Subdomain:** Lihat [`SUBDOMAIN_SETUP.md`](SUBDOMAIN_SETUP.md) jika ingin menggunakan subdomain
+
+### Opsi Deployment
+1. **VPS/Server** (DigitalOcean, AWS EC2, dll) - Recommended untuk production
+2. **Cloud Platform** (Railway, Render, Heroku) - Mudah dan cepat
+3. **Docker** - Portable dan mudah di-deploy
+
+### Checklist Cepat
+- [ ] Server sudah setup (Node.js, PM2, Nginx)
+- [ ] Aplikasi sudah di-deploy
+- [ ] Database sudah di-setup
+- [ ] Environment variables sudah dikonfigurasi
+- [ ] Reverse proxy (Nginx) sudah dikonfigurasi
+- [ ] SSL certificate sudah di-setup (untuk HTTPS)
+- [ ] Firewall sudah dikonfigurasi
+
+**Lihat `DEPLOYMENT.md` untuk panduan lengkap deployment!**
+
 ## 📞 Support
 
 Untuk pertanyaan atau issue:
