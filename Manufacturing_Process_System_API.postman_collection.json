@@ -1,0 +1,839 @@
+{
+	"info": {
+		"_postman_id": "mps-api-collection-2025",
+		"name": "Manufacturing Process System API",
+		"description": "API Collection untuk Manufacturing Process System - Data MPR (Manufacturing Production Records)\n\nBase URL: https://mps.moof-set.web.id\nAPI Key: mps_da64277ca3c9540e859e8e6025604159\n\nCollection ini mencakup semua endpoint untuk mengambil data:\n- Recent MO (Manufacturing Orders)\n- Manufacturing Identity\n- Production Log\n- Master Authenticity Vendor\n- Authenticity Used RM\n- Authenticity Used Line",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://mps.moof-set.web.id",
+			"type": "string"
+		},
+		{
+			"key": "api_key",
+			"value": "mps_da64277ca3c9540e859e8e6025604159",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Recent MO",
+			"item": [
+				{
+					"name": "Get All Recent MO",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/recent-mo?limit=100&offset=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "recent-mo"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100",
+									"description": "Jumlah data per halaman (default: 100, max: 1000)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Offset untuk pagination (default: 0)"
+								}
+							]
+						},
+						"description": "Mengambil semua data Recent MO (Manufacturing Orders) dengan pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent MO - Ready for Production",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/recent-mo?limit=100&offset=0&ready=true",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "recent-mo"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "ready",
+									"value": "true",
+									"description": "Filter hanya MO yang ready untuk produksi"
+								}
+							]
+						},
+						"description": "Mengambil data Recent MO yang sudah siap untuk produksi (ready_for_production = 1)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent MO - Not Ready",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/recent-mo?limit=100&offset=0&ready=false",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "recent-mo"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "ready",
+									"value": "false",
+									"description": "Filter hanya MO yang belum ready"
+								}
+							]
+						},
+						"description": "Mengambil data Recent MO yang belum siap untuk produksi"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent MO by MO Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/recent-mo?mo_name=MO/001&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "recent-mo"],
+							"query": [
+								{
+									"key": "mo_name",
+									"value": "MO/001",
+									"description": "Filter by MO name (exact match)"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Recent MO berdasarkan nama MO tertentu"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent MO by State",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/recent-mo?state=progress&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "recent-mo"],
+							"query": [
+								{
+									"key": "state",
+									"value": "progress",
+									"description": "Filter by state: progress, done, draft, dll"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Recent MO berdasarkan state (status produksi)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint untuk mengambil data Recent MO (Manufacturing Orders)"
+		},
+		{
+			"name": "Manufacturing Identity",
+			"item": [
+				{
+					"name": "Get All Manufacturing Identity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/manufacturing-identity?limit=100&offset=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "manufacturing-identity"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100",
+									"description": "Jumlah data per halaman"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Offset untuk pagination"
+								}
+							]
+						},
+						"description": "Mengambil semua data Manufacturing Identity dengan pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Manufacturing Identity by MO Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/manufacturing-identity?mo_name=MO/001&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "manufacturing-identity"],
+							"query": [
+								{
+									"key": "mo_name",
+									"value": "MO/001",
+									"description": "Filter by MO name"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Manufacturing Identity berdasarkan nama MO"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Manufacturing Identity by SKU",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/manufacturing-identity?sku=SKU001&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "manufacturing-identity"],
+							"query": [
+								{
+									"key": "sku",
+									"value": "SKU001",
+									"description": "Filter by SKU code"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Manufacturing Identity berdasarkan SKU"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Manufacturing Identity by Created At",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/manufacturing-identity?created_at_from=2024-01-15&created_at_to=2024-01-20&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "manufacturing-identity"],
+							"query": [
+								{
+									"key": "created_at_from",
+									"value": "2024-01-15",
+									"description": "Filter from created_at (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+								},
+								{
+									"key": "created_at_to",
+									"value": "2024-01-20",
+									"description": "Filter to created_at (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Manufacturing Identity berdasarkan range tanggal created_at"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Manufacturing Identity by Finished At",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/manufacturing-identity?finished_at_from=2024-01-15&finished_at_to=2024-01-20&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "manufacturing-identity"],
+							"query": [
+								{
+									"key": "finished_at_from",
+									"value": "2024-01-15",
+									"description": "Filter from finished_at (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+								},
+								{
+									"key": "finished_at_to",
+									"value": "2024-01-20",
+									"description": "Filter to finished_at (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Manufacturing Identity berdasarkan range tanggal finished_at"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint untuk mengambil data Manufacturing Identity (identitas manufacturing per MO)"
+		},
+		{
+			"name": "Production Log",
+			"item": [
+				{
+					"name": "Get All Production Log",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/production-log?limit=100&offset=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "production-log"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Mengambil semua data Production Log (log aktivitas produksi: start/end)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Production Log by MO Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/production-log?mo_name=MO/001&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "production-log"],
+							"query": [
+								{
+									"key": "mo_name",
+									"value": "MO/001",
+									"description": "Filter by MO name"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil Production Log berdasarkan nama MO"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Production Log - Start Only",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/production-log?status=start&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "production-log"],
+							"query": [
+								{
+									"key": "status",
+									"value": "start",
+									"description": "Filter by status: start atau end"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil Production Log dengan status 'start' (produksi dimulai)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Production Log - End Only",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/production-log?status=end&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "production-log"],
+							"query": [
+								{
+									"key": "status",
+									"value": "end",
+									"description": "Filter by status: start atau end"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil Production Log dengan status 'end' (produksi selesai)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Production Log by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/production-log?from_date=2024-01-15&to_date=2024-01-20&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "production-log"],
+							"query": [
+								{
+									"key": "from_date",
+									"value": "2024-01-15",
+									"description": "Filter from date (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+								},
+								{
+									"key": "to_date",
+									"value": "2024-01-20",
+									"description": "Filter to date (format: YYYY-MM-DD atau YYYY-MM-DD HH:MM:SS)"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil Production Log berdasarkan range tanggal"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint untuk mengambil data Production Log (log aktivitas produksi)"
+		},
+		{
+			"name": "Master Authenticity Vendor",
+			"item": [
+				{
+					"name": "Get All Master Authenticity Vendor",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/master-authenticity-vendor?limit=100&offset=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "master-authenticity-vendor"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Mengambil semua data Master Authenticity Vendor"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Master Authenticity Vendor by Roll",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/master-authenticity-vendor?roll=R001&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "master-authenticity-vendor"],
+							"query": [
+								{
+									"key": "roll",
+									"value": "R001",
+									"description": "Filter by roll number"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Master Authenticity Vendor berdasarkan roll number"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Master Authenticity Vendor by Authenticity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/master-authenticity-vendor?authenticity=1000&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "master-authenticity-vendor"],
+							"query": [
+								{
+									"key": "authenticity",
+									"value": "1000",
+									"description": "Filter by authenticity code"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Master Authenticity Vendor berdasarkan authenticity code"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint untuk mengambil data Master Authenticity Vendor"
+		},
+		{
+			"name": "Authenticity Used RM",
+			"item": [
+				{
+					"name": "Get All Authenticity Used RM",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/authenticity-used-rm?limit=100&offset=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "authenticity-used-rm"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Mengambil semua data Authenticity Used RM (penggunaan authenticity di warehouse RM)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Authenticity Used RM by Transfer ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/authenticity-used-rm?transfer_id=123&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "authenticity-used-rm"],
+							"query": [
+								{
+									"key": "transfer_id",
+									"value": "123",
+									"description": "Filter by transfer ID"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Authenticity Used RM berdasarkan transfer ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Authenticity Used RM by Authenticity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/authenticity-used-rm?authenticity=1000&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "authenticity-used-rm"],
+							"query": [
+								{
+									"key": "authenticity",
+									"value": "1000",
+									"description": "Filter by authenticity code"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Authenticity Used RM berdasarkan authenticity code"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint untuk mengambil data Authenticity Used RM (penggunaan authenticity di warehouse RM)"
+		},
+		{
+			"name": "Authenticity Used Line",
+			"item": [
+				{
+					"name": "Get All Authenticity Used Line",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/authenticity-used-line?limit=100&offset=0",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "authenticity-used-line"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						},
+						"description": "Mengambil semua data Authenticity Used Line (penggunaan authenticity di line produksi)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Authenticity Used Line by MO Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/authenticity-used-line?mo_name=MO/001&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "authenticity-used-line"],
+							"query": [
+								{
+									"key": "mo_name",
+									"value": "MO/001",
+									"description": "Filter by MO name"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Authenticity Used Line berdasarkan nama MO"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Authenticity Used Line by SKU Barcode",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-api-key",
+								"value": "{{api_key}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/data/authenticity-used-line?sku_barcode=SKU001&limit=100",
+							"host": ["{{base_url}}"],
+							"path": ["api", "data", "authenticity-used-line"],
+							"query": [
+								{
+									"key": "sku_barcode",
+									"value": "SKU001",
+									"description": "Filter by SKU barcode"
+								},
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Mengambil data Authenticity Used Line berdasarkan SKU barcode"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoint untuk mengambil data Authenticity Used Line (penggunaan authenticity di line produksi)"
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{api_key}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "x-api-key",
+				"type": "string"
+			}
+		]
+	}
+}
+

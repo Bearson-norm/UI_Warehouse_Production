@@ -504,6 +504,20 @@ Lihat folder `examples/` untuk contoh implementasi:
 
 **Lihat `API_DOCUMENTATION.md` untuk dokumentasi lengkap!**
 
+### Dokumentasi Spesifik
+
+- **Manufacturing Identity:** [`API_MANUFACTURING_IDENTITY.md`](API_MANUFACTURING_IDENTITY.md) - Dokumentasi lengkap dengan filter `created_at` dan `finished_at`, termasuk contoh response OK dan Error
+
+### Menggunakan Postman
+
+Untuk testing API dengan Postman, lihat panduan lengkap di [`POSTMAN_GUIDE.md`](POSTMAN_GUIDE.md)
+
+**Quick Start Postman:**
+1. Method: `GET`
+2. URL: `https://mps.moof-set.web.id/api/data/recent-mo`
+3. Headers: `x-api-key: mps_your_api_key_here`
+4. Klik **Send**
+
 ## 💻 Local Development & Database Access
 
 ### Menjalankan di Local

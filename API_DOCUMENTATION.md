@@ -4,11 +4,9 @@ Dokumentasi ini menjelaskan cara menggunakan API untuk mengambil data dari Manuf
 
 ## Base URL
 
-Ganti `https://your-server.com` dengan URL server Anda yang sudah di-deploy.
+**Production URL:** `https://mps.moof-set.web.id`
 
-```
-https://your-server.com
-```
+Untuk development local, gunakan: `http://localhost:3000`
 
 ## Authentication
 
@@ -229,14 +227,27 @@ curl -H "x-session-token: YOUR_TOKEN" \
 - `offset` (optional): Offset (default: 0)
 - `mo_name` (optional): Filter by MO name
 - `sku` (optional): Filter by SKU
+- `created_at_from` (optional): Filter from created_at (format: `YYYY-MM-DD` atau `YYYY-MM-DD HH:MM:SS`)
+- `created_at_to` (optional): Filter to created_at (format: `YYYY-MM-DD` atau `YYYY-MM-DD HH:MM:SS`)
+- `finished_at_from` (optional): Filter from finished_at (format: `YYYY-MM-DD` atau `YYYY-MM-DD HH:MM:SS`)
+- `finished_at_to` (optional): Filter to finished_at (format: `YYYY-MM-DD` atau `YYYY-MM-DD HH:MM:SS`)
 
 **Contoh Request:**
 ```bash
-curl -H "x-session-token: YOUR_TOKEN" \
-  "https://your-server.com/api/data/manufacturing-identity?mo_name=MO/001"
+# Get by MO name
+curl -H "x-api-key: YOUR_API_KEY" \
+  "https://mps.moof-set.web.id/api/data/manufacturing-identity?mo_name=MO/001"
+
+# Get by created_at date range
+curl -H "x-api-key: YOUR_API_KEY" \
+  "https://mps.moof-set.web.id/api/data/manufacturing-identity?created_at_from=2024-01-15&created_at_to=2024-01-20"
+
+# Get by finished_at date range
+curl -H "x-api-key: YOUR_API_KEY" \
+  "https://mps.moof-set.web.id/api/data/manufacturing-identity?finished_at_from=2024-01-15&finished_at_to=2024-01-20"
 ```
 
-**Response:**
+**Response (Success):**
 ```json
 {
   "ok": true,
@@ -250,13 +261,41 @@ curl -H "x-session-token: YOUR_TOKEN" \
       "done_qty": 95,
       "leader_name": "001",
       "started_at": "2024-01-15 08:00:00",
-      "finished_at": null,
+      "finished_at": "2024-01-15 16:30:00",
       "created_at": "2024-01-15 08:00:00"
     }
   ],
-  "pagination": {...}
+  "pagination": {
+    "total": 25,
+    "limit": 100,
+    "offset": 0,
+    "has_more": false
+  }
 }
 ```
+
+**Response (Error - Unauthorized):**
+```json
+{
+  "error": "Unauthorized: No session token or API key provided"
+}
+```
+
+**Response (Error - No Data):**
+```json
+{
+  "ok": true,
+  "data": [],
+  "pagination": {
+    "total": 0,
+    "limit": 100,
+    "offset": 0,
+    "has_more": false
+  }
+}
+```
+
+**📖 Dokumentasi Lengkap:** Lihat [`API_MANUFACTURING_IDENTITY.md`](API_MANUFACTURING_IDENTITY.md) untuk dokumentasi detail dengan contoh response OK dan Error.
 
 ---
 
@@ -344,11 +383,66 @@ curl -H "x-session-token: YOUR_TOKEN" \
 - `mo_name` (optional): Filter by MO name
 - `sku_barcode` (optional): Filter by SKU barcode
 
+**Catatan:** 
+- Endpoint akan mengambil data dari tabel `authenticity_used_line` jika ada
+- Jika tabel `authenticity_used_line` kosong, endpoint akan mengambil data dari `recent_mo` yang memiliki `auth_first` atau `auth_last`
+- Response includes field `_source` yang menunjukkan sumber data (`authenticity_used_line` atau `recent_mo`)
+
 **Contoh Request:**
 ```bash
-curl -H "x-session-token: YOUR_TOKEN" \
-  "https://your-server.com/api/data/authenticity-used-line?mo_name=MO/001"
+curl -H "x-api-key: YOUR_API_KEY" \
+  "https://mps.moof-set.web.id/api/data/authenticity-used-line?mo_name=PROD/MO/27209"
 ```
+
+**Response (Success - dari recent_mo):**
+```json
+{
+  "ok": true,
+  "data": [
+    {
+      "id": null,
+      "mo_name": "PROD/MO/27209",
+      "sku_barcode": "LITE MANGO",
+      "auth_first_code": "1000",
+      "auth_last_code": "1095",
+      "created_at": "2025-11-26 10:19:18"
+    }
+  ],
+  "pagination": {
+    "total": 8,
+    "limit": 100,
+    "offset": 0,
+    "has_more": false
+  },
+  "_source": "recent_mo"
+}
+```
+
+**Response (Success - dari authenticity_used_line):**
+```json
+{
+  "ok": true,
+  "data": [
+    {
+      "id": 1,
+      "mo_name": "PROD/MO/27209",
+      "sku_barcode": "LITE MANGO",
+      "auth_first_code": "1000",
+      "auth_last_code": "1095",
+      "created_at": "2025-11-26 10:19:18"
+    }
+  ],
+  "pagination": {
+    "total": 1,
+    "limit": 100,
+    "offset": 0,
+    "has_more": false
+  },
+  "_source": "authenticity_used_line"
+}
+```
+
+**Lihat [`AUTHENTICITY_USED_LINE_FIX.md`](AUTHENTICITY_USED_LINE_FIX.md) untuk penjelasan lengkap tentang perubahan ini.**
 
 ---
 

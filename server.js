@@ -956,6 +956,10 @@ app.get('/api/data/manufacturing-identity', requireAuth, async (req, res) => {
 		const offset = parseInt(req.query.offset || '0', 10);
 		const mo_name = req.query.mo_name;
 		const sku = req.query.sku;
+		const created_at_from = req.query.created_at_from; // YYYY-MM-DD or YYYY-MM-DD HH:MM:SS
+		const created_at_to = req.query.created_at_to;
+		const finished_at_from = req.query.finished_at_from;
+		const finished_at_to = req.query.finished_at_to;
 
 		let sql = 'SELECT * FROM manufacturing_identity WHERE 1=1';
 		const params = [];
@@ -967,6 +971,22 @@ app.get('/api/data/manufacturing-identity', requireAuth, async (req, res) => {
 		if (sku) {
 			sql += ' AND sku = ?';
 			params.push(sku);
+		}
+		if (created_at_from) {
+			sql += ' AND datetime(created_at) >= ?';
+			params.push(created_at_from);
+		}
+		if (created_at_to) {
+			sql += ' AND datetime(created_at) <= ?';
+			params.push(created_at_to);
+		}
+		if (finished_at_from) {
+			sql += ' AND datetime(finished_at) >= ?';
+			params.push(finished_at_from);
+		}
+		if (finished_at_to) {
+			sql += ' AND datetime(finished_at) <= ?';
+			params.push(finished_at_to);
 		}
 
 		sql += ' ORDER BY datetime(created_at) DESC LIMIT ? OFFSET ?';
@@ -984,6 +1004,22 @@ app.get('/api/data/manufacturing-identity', requireAuth, async (req, res) => {
 		if (sku) {
 			countSql += ' AND sku = ?';
 			countParams.push(sku);
+		}
+		if (created_at_from) {
+			countSql += ' AND datetime(created_at) >= ?';
+			countParams.push(created_at_from);
+		}
+		if (created_at_to) {
+			countSql += ' AND datetime(created_at) <= ?';
+			countParams.push(created_at_to);
+		}
+		if (finished_at_from) {
+			countSql += ' AND datetime(finished_at) >= ?';
+			countParams.push(finished_at_from);
+		}
+		if (finished_at_to) {
+			countSql += ' AND datetime(finished_at) <= ?';
+			countParams.push(finished_at_to);
 		}
 		const countResult = await get(db, countSql, countParams);
 
@@ -1180,6 +1216,8 @@ app.get('/api/data/authenticity-used-rm', requireAuth, async (req, res) => {
 });
 
 // API: Get authenticity_used_line data
+// Note: Data diambil dari recent_mo karena authenticity_used_line mungkin kosong
+// Data di-format sesuai struktur authenticity_used_line untuk kompatibilitas
 app.get('/api/data/authenticity-used-line', requireAuth, async (req, res) => {
 	try {
 		const limit = parseInt(req.query.limit || '100', 10);
@@ -1187,6 +1225,7 @@ app.get('/api/data/authenticity-used-line', requireAuth, async (req, res) => {
 		const mo_name = req.query.mo_name;
 		const sku_barcode = req.query.sku_barcode;
 
+		// First, try to get from authenticity_used_line table
 		let sql = 'SELECT * FROM authenticity_used_line WHERE 1=1';
 		const params = [];
 
@@ -1204,7 +1243,78 @@ app.get('/api/data/authenticity-used-line', requireAuth, async (req, res) => {
 
 		const rows = await all(db, sql, params);
 		
-		// Get total count
+		// If no data in authenticity_used_line, get from recent_mo
+		if (rows.length === 0) {
+			// Get data from recent_mo where auth_first or auth_last is not null
+			let recentMoSql = `
+				SELECT 
+					mo_name,
+					product_name as sku_barcode,
+					auth_first as auth_first_code,
+					auth_last as auth_last_code,
+					COALESCE(date_start, created_at) as created_at
+				FROM recent_mo
+				WHERE (auth_first IS NOT NULL AND TRIM(auth_first) <> '')
+				   OR (auth_last IS NOT NULL AND TRIM(auth_last) <> '')
+			`;
+			const recentMoParams = [];
+
+			if (mo_name) {
+				recentMoSql += ' AND mo_name = ?';
+				recentMoParams.push(mo_name);
+			}
+			if (sku_barcode) {
+				recentMoSql += ' AND product_name LIKE ?';
+				recentMoParams.push(`%${sku_barcode}%`);
+			}
+
+			recentMoSql += ' ORDER BY datetime(COALESCE(date_start, created_at)) DESC LIMIT ? OFFSET ?';
+			recentMoParams.push(limit, offset);
+
+			const recentMoRows = await all(db, recentMoSql, recentMoParams);
+			
+			// Format data to match authenticity_used_line structure
+			const formattedRows = recentMoRows.map(row => ({
+				id: null, // No ID from recent_mo
+				mo_name: row.mo_name,
+				sku_barcode: row.sku_barcode,
+				auth_first_code: row.auth_first_code,
+				auth_last_code: row.auth_last_code,
+				created_at: row.created_at
+			}));
+
+			// Get total count from recent_mo
+			let countSql = `
+				SELECT COUNT(*) as total
+				FROM recent_mo
+				WHERE (auth_first IS NOT NULL AND TRIM(auth_first) <> '')
+				   OR (auth_last IS NOT NULL AND TRIM(auth_last) <> '')
+			`;
+			const countParams = [];
+			if (mo_name) {
+				countSql += ' AND mo_name = ?';
+				countParams.push(mo_name);
+			}
+			if (sku_barcode) {
+				countSql += ' AND product_name LIKE ?';
+				countParams.push(`%${sku_barcode}%`);
+			}
+			const countResult = await get(db, countSql, countParams);
+
+			return res.json({
+				ok: true,
+				data: formattedRows,
+				pagination: {
+					total: countResult?.total || 0,
+					limit,
+					offset,
+					has_more: (offset + formattedRows.length) < (countResult?.total || 0)
+				},
+				_source: 'recent_mo' // Indicate data source
+			});
+		}
+
+		// If data exists in authenticity_used_line, return it
 		let countSql = 'SELECT COUNT(*) as total FROM authenticity_used_line WHERE 1=1';
 		const countParams = [];
 		if (mo_name) {
@@ -1225,7 +1335,8 @@ app.get('/api/data/authenticity-used-line', requireAuth, async (req, res) => {
 				limit,
 				offset,
 				has_more: (offset + rows.length) < (countResult?.total || 0)
-			}
+			},
+			_source: 'authenticity_used_line' // Indicate data source
 		});
 	} catch (e) {
 		res.status(500).json({ error: e.message });
