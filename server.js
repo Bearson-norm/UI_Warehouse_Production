@@ -1163,6 +1163,8 @@ app.get('/api/data/master-authenticity-vendor', requireAuth, async (req, res) =>
 });
 
 // API: Get authenticity_used_rm data
+// Note: Data diambil dari recent_mo jika tabel authenticity_used_rm kosong
+// Data di-format sesuai struktur authenticity_used_rm untuk kompatibilitas
 app.get('/api/data/authenticity-used-rm', requireAuth, async (req, res) => {
 	try {
 		const limit = parseInt(req.query.limit || '100', 10);
@@ -1170,6 +1172,7 @@ app.get('/api/data/authenticity-used-rm', requireAuth, async (req, res) => {
 		const transfer_id = req.query.transfer_id;
 		const authenticity = req.query.authenticity;
 
+		// First, try to get from authenticity_used_rm table
 		let sql = 'SELECT * FROM authenticity_used_rm WHERE 1=1';
 		const params = [];
 
@@ -1187,7 +1190,79 @@ app.get('/api/data/authenticity-used-rm', requireAuth, async (req, res) => {
 
 		const rows = await all(db, sql, params);
 		
-		// Get total count
+		// If no data in authenticity_used_rm, get from recent_mo
+		if (rows.length === 0) {
+			// Get data from recent_mo where transfer_id is not null and has authenticity data
+			let recentMoSql = `
+				SELECT 
+					transfer_id,
+					auth_first as authenticity,
+					COALESCE(date_start, created_at) as transfer_date,
+					COALESCE(date_start, created_at) as created_at
+				FROM recent_mo
+				WHERE transfer_id IS NOT NULL
+				  AND ((auth_first IS NOT NULL AND TRIM(auth_first) <> '')
+				   OR (auth_last IS NOT NULL AND TRIM(auth_last) <> ''))
+			`;
+			const recentMoParams = [];
+
+			if (transfer_id) {
+				recentMoSql += ' AND transfer_id = ?';
+				recentMoParams.push(transfer_id);
+			}
+			if (authenticity) {
+				recentMoSql += ' AND (auth_first = ? OR auth_last = ?)';
+				recentMoParams.push(authenticity, authenticity);
+			}
+
+			recentMoSql += ' ORDER BY datetime(COALESCE(date_start, created_at)) DESC LIMIT ? OFFSET ?';
+			recentMoParams.push(limit, offset);
+
+			const recentMoRows = await all(db, recentMoSql, recentMoParams);
+			
+			// Format data to match authenticity_used_rm structure
+			// Generate sequential IDs starting from a high number to avoid conflicts
+			const formattedRows = recentMoRows.map((row, index) => ({
+				id: 1000000 + offset + index, // Generate temporary ID to avoid null
+				transfer_id: row.transfer_id,
+				authenticity: row.authenticity,
+				transfer_date: row.transfer_date,
+				created_at: row.created_at
+			}));
+
+			// Get total count from recent_mo
+			let countSql = `
+				SELECT COUNT(*) as total
+				FROM recent_mo
+				WHERE transfer_id IS NOT NULL
+				  AND ((auth_first IS NOT NULL AND TRIM(auth_first) <> '')
+				   OR (auth_last IS NOT NULL AND TRIM(auth_last) <> ''))
+			`;
+			const countParams = [];
+			if (transfer_id) {
+				countSql += ' AND transfer_id = ?';
+				countParams.push(transfer_id);
+			}
+			if (authenticity) {
+				countSql += ' AND (auth_first = ? OR auth_last = ?)';
+				countParams.push(authenticity, authenticity);
+			}
+			const countResult = await get(db, countSql, countParams);
+
+			return res.json({
+				ok: true,
+				data: formattedRows,
+				pagination: {
+					total: countResult?.total || 0,
+					limit,
+					offset,
+					has_more: (offset + formattedRows.length) < (countResult?.total || 0)
+				},
+				_source: 'recent_mo' // Indicate data source
+			});
+		}
+
+		// If data exists in authenticity_used_rm, return it
 		let countSql = 'SELECT COUNT(*) as total FROM authenticity_used_rm WHERE 1=1';
 		const countParams = [];
 		if (transfer_id) {
@@ -1208,7 +1283,8 @@ app.get('/api/data/authenticity-used-rm', requireAuth, async (req, res) => {
 				limit,
 				offset,
 				has_more: (offset + rows.length) < (countResult?.total || 0)
-			}
+			},
+			_source: 'authenticity_used_rm' // Indicate data source
 		});
 	} catch (e) {
 		res.status(500).json({ error: e.message });
